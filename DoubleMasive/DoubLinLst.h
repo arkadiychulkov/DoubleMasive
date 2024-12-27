@@ -87,5 +87,42 @@ public:
         }
         std::cout << std::endl;
     }
-};
 
+    DoubLinLst Clone() const {
+        DoubLinLst cloneList;
+        Node* current = head;
+        while (current) {
+            cloneList.AddAfterTail(current->data);
+            current = current->next;
+        }
+        return cloneList;
+    }
+
+    DoubLinLst operator+(const DoubLinLst& other) const {
+        DoubLinLst combinedList = this->Clone();
+        Node* current = other.head;
+        while (current) {
+            combinedList.AddAfterTail(current->data);
+            current = current->next;
+        }
+        return combinedList;
+    }
+
+    DoubLinLst operator*(const DoubLinLst& other) const {
+        DoubLinLst intersectionList;
+        Node* current = head;
+        while (current) {
+            Node* otherCurrent = other.head;
+            while (otherCurrent) {
+                if (current->data == otherCurrent->data) {
+                    intersectionList.AddAfterTail(current->data);
+                    break;
+                }
+                otherCurrent = otherCurrent->next;
+            }
+            current = current->next;
+        }
+        return intersectionList;
+    }
+
+};
