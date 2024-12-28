@@ -1,22 +1,49 @@
 #include <iostream>
 #include "DoubLinLst.h"
+#include "Array.h"
 
 int main() {
-    DoubLinLst<int> list;
+    
+    Array<int> arr;
 
-    list.AddInFrontOfHead(1);
-    list.AddAfterTail(2);
-    list.AddAfterTail(3);
-    list.Show();
+    arr.Add(10);
+    arr.Add(20);
+    arr.Add(30);
 
-    list.DeleteFromHead();
-    list.Show();
+    std::cout << "Add: ";
+    for (int i = 0; i < arr.GetSize(); i++) {
+        std::cout << arr[i] << " ";
+    }
+    std::cout << "\n";
 
-    list.DeleteFromTail();
-    list.Show();
+    arr.SetSize(5);
+    std::cout << "SetSize: ";
+    for (int i = 0; i < arr.GetSize(); i++) {
+        std::cout << arr[i] << " ";
+    }
+    std::cout << "\n";
 
-    list.DeleteAll();
-    list.Show();
+    arr.SetAt(3, 40);
+    arr.SetAt(4, 50);
 
-    return 0;
+    std::cout << "SetAt: ";
+    for (int i = 0; i < arr.GetSize(); i++) {
+        std::cout << arr[i] << " ";
+    }
+    std::cout << "\n";
+
+    arr.RemoveAt(1);
+    std::cout << "RemoveAt 1: ";
+    for (int i = 0; i < arr.GetSize(); i++) {
+        std::cout << arr[i] << " ";
+    }
+    std::cout << "\n";
+
+    arr.FreeExtra();
+    std::cout << "FreeExtra: ";
+    for (int i = 0; i < arr.GetSize(); i++) {
+        std::cout << arr[i] << " ";
+    }
+    std::cout << "\n";
+
 }
