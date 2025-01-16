@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdexcept>
 
 template<typename T>
 class Array {
@@ -31,6 +32,10 @@ private:
     }
 
     Node* getNodeAt(int index) {
+        if (index < 0 || index >= size) {
+            throw std::out_of_range("Index");
+        }
+
         Node* current = head;
         for (int i = 0; i < index; i++) {
             current = current->next;
@@ -40,16 +45,21 @@ private:
 
     void addEmptyNodes(int num) {
         for (int i = 0; i < num; i++) {
-            Node* newNode = new Node();
-            if (!head) {
-                head = tail = newNode;
+            try {
+                Node* newNode = new Node();
+                if (!head) {
+                    head = tail = newNode;
+                }
+                else {
+                    tail->next = newNode;
+                    newNode->prev = tail;
+                    tail = newNode;
+                }
+                size++;
             }
-            else {
-                tail->next = newNode;
-                newNode->prev = tail;
-                tail = newNode;
+            catch (const std::bad_alloc&) {
+                throw std::runtime_error("Memory faled");
             }
-            size++;
         }
     }
 
@@ -65,6 +75,10 @@ public:
     }
 
     void SetSize(int newSize, int growStep = 1) {
+        if (newSize < 0) {
+            throw std::invalid_argument("size can't be neg");
+        }
+
         this->grow = growStep;
 
         if (newSize > size) {
@@ -136,7 +150,7 @@ public:
         Node* current = getNodeAt(count);
         current->data = value;
         current->isEmpty = false;
-        ++count;
+        count++;
     }
 
     void Append(Array<T>& other) {
@@ -167,7 +181,15 @@ public:
     T* GetData() {
         if (IsEmpty())
             return nullptr;
-        T* dataArray = new T[count];
+
+        T* dataArray = nullptr;
+        try {
+            dataArray = new T[count];
+        }
+        catch (const std::bad_alloc&) {
+            throw std::runtime_error("Memory faled");
+        }
+
         Node* current = head;
         for (int i = 0; i < count; i++) {
             while (current->isEmpty) {
@@ -180,7 +202,17 @@ public:
     }
 
     void InsertAt(int index, const T& value) {
-        Node* newNode = new Node(value);
+        if (index < 0 || index > size) {
+            throw std::out_of_range("Index");
+        }
+
+        Node* newNode = nullptr;
+        try {
+            newNode = new Node(value);
+        }
+        catch (const std::bad_alloc&) {
+            throw std::runtime_error("Memory faled");
+        }
 
         if (index == 0) {
             if (head) {
@@ -199,7 +231,7 @@ public:
             Node* current = getNodeAt(index);
             newNode->next = current;
             newNode->prev = current->prev;
-            if (current->prev) 
+            if (current->prev)
                 current->prev->next = newNode;
             current->prev = newNode;
         }
@@ -207,8 +239,16 @@ public:
         size++;
         count++;
     }
-    //
+
     void RemoveAt(int index) {
+        if (IsEmpty()) {
+            throw std::runtime_error("remove empt list");
+        }
+
+        if (index < 0 || index >= size) {
+            throw std::out_of_range("Index");
+        }
+
         Node* toRemove = getNodeAt(index);
 
         if (toRemove->prev) {
